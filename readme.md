@@ -1,3 +1,39 @@
+Setup
+Master Node Setup
+Execute the master node setup script:
+
+Copy bash
+./infrastructure/scripts/setup-master.sh
+Add Worker Node
+Execute the worker node setup script:
+
+Copy bash
+./infrastructure/scripts/add-worker.sh
+Deploy Infrastructure
+Execute the deployment script:
+
+Copy bash
+./infrastructure/scripts/deploy.sh
+Test Infrastructure
+Execute the test script:
+
+Copy bash
+./infrastructure/scripts/test-infrastructure.sh
+Backup and Restore
+Backup:
+
+Copy bash
+./infrastructure/scripts/backup.sh
+Restore:
+
+Copy bash
+./infrastructure/scripts/restore.sh <backup-name>
+Cleanup
+Cleanup Infrastructure:
+
+Copy bash
+./infrastructure/scripts/cleanup.sh
+
 chmod +x 01_os_setup.sh 02_configure_hostname_network.sh 03_install_docker.sh 04_install_k3s.sh 05_setup_git_repo.sh 06_setup_terraform.sh 07_setup_kubernetes_manifests.sh
 
 ./01_os_setup.sh
