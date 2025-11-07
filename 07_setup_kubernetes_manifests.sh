@@ -47,7 +47,7 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 500Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteMany
   hostPath:
@@ -72,7 +72,7 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 100Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteMany
   hostPath:
@@ -97,7 +97,7 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 100Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -122,7 +122,7 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 20Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -147,7 +147,7 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 50Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -215,7 +215,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -346,7 +346,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -461,7 +461,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -573,7 +573,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
