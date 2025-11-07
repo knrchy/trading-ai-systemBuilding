@@ -502,8 +502,8 @@ spec:
             memory: "2Gi"
             cpu: "1000m"
           limits:
-            memory: "4Gi"
-            cpu: "2000m"
+            memory: "2Gi"
+            cpu: "1000m"
         livenessProbe:
           httpGet:
             path: /api/v1/heartbeat
