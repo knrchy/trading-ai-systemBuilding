@@ -95,7 +95,7 @@ metadata:
     type: local
     app: postgres
 spec:
-  storageClassName: local-storage
+  storageClassName: local-path
   capacity:
     storage: 5Gi
   accessModes:
@@ -210,7 +210,7 @@ metadata:
   labels:
     app: postgres
 spec:
-  storageClassName: local-storage
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
