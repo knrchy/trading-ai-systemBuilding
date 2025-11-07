@@ -9,6 +9,7 @@ run
 ./infrastructure/scripts/backup.sh
 ./infrastructure/scripts/restore.sh <backup-name>
 ./infrastructure/scripts/cleanup.sh
+K1059aa3332ec09d24bf4b93b3e7e1e75293b457e0b99ece3e7775538c3d21e7f97::server:6a6cc5200e64f1605f943c4f3c3c36fb
 
 
 markdown
