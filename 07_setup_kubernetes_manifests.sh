@@ -490,13 +490,14 @@ spec:
         env:
         - name: IS_PERSISTENT
           value: "TRUE"
-        - name: PERSIST_DIRECTORY
-          value: "/chroma/chroma"
+        #- name: PERSIST_DIRECTORY
+        # value: "/chroma/chroma"
         - name: ANONYMIZED_TELEMETRY
           value: "FALSE"
         volumeMounts:
         - name: chromadb-storage
-          mountPath: /chroma/chroma
+          #mountPath: /chroma/chroma
+          /data
         resources:
           requests:
             memory: "2Gi"
