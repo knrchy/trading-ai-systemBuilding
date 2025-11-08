@@ -597,7 +597,7 @@ metadata:
   labels:
     app: ollama
 spec:
-  storageClassName: local-storage
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
