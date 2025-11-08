@@ -25,7 +25,6 @@ if ! command -v kubectl &> /dev/null; then
     exit 1
 fi
 
-
 # Check if we're in the right directory
 if [ ! -d "infrastructure" ]; then
     echo -e "${RED}❌ Please run this script from the project root directory${NC}"
@@ -89,6 +88,13 @@ OLLAMA_POD=$(kubectl get pod -n trading-system -l app=ollama -o jsonpath='{.item
 kubectl exec -n trading-system $OLLAMA_POD -- ollama pull llama3.1:8b
 echo -e "${GREEN}✓ Ollama model downloaded${NC}"
 
+# install helm is available
+echo ""
+echo "Installing Helm"
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+echo "Updating Helm"
+helm repo update
+echo -e "${GREEN}✓ Helm updated${NC}"
 
 echo ""
 echo -e "${YELLOW}🏗️  Step 9: Deploying with Terraform${NC}"
