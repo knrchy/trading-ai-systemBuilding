@@ -241,12 +241,12 @@ EOF
 # Monitoring configuration file
 cat > monitoring.tf << 'EOF'
 # Data source to wait until the ServiceMonitor CRD is installed and recognized by the API server
-data "kubernetes_api_versions" "monitoring_coreos_v1" {
-  group = "monitoring.coreos.com"
-  version = "v1"
-  # Force this data source lookup to wait until the Helm release (which installs the CRD) is deployed
-  depends_on = [helm_release.prometheus] 
-}
+#data "kubernetes_api_versions" "monitoring_coreos_v1" {
+#  group = "monitoring.coreos.com"
+#  version = "v1"
+#  # Force this data source lookup to wait until the Helm release (which installs the CRD) is deployed
+#  depends_on = [helm_release.prometheus] 
+#}
 
 # Prometheus for metrics collection
 resource "helm_release" "prometheus" {
@@ -339,10 +339,10 @@ resource "kubernetes_manifest" "trading_service_monitor" {
   }
 
   # Add dependency on the data source and the namespace creation
-  depends_on = [
-    data.kubernetes_api_versions.monitoring_coreos_v1,
-    kubernetes_namespace.trading_system
-  ]
+  #depends_on = [
+  #  data.kubernetes_api_versions.monitoring_coreos_v1,
+  #  kubernetes_namespace.trading_system
+  #]
 }
 EOF
 
