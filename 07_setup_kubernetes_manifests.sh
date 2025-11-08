@@ -505,18 +505,18 @@ spec:
           limits:
             memory: "2Gi"
             cpu: "1000m"
-        livenessProbe:
-          httpGet:
-            path: /api/v1/heartbeat
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/v1/heartbeat
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        #livenessProbe:
+         # httpGet:
+          #  path: /api/v1/heartbeat
+           # port: 8000
+          #initialDelaySeconds: 30
+          #periodSeconds: 10
+        #readinessProbe:
+         # httpGet:
+          #  path: /api/v1/heartbeat
+           # port: 8000
+          #initialDelaySeconds: 5
+          #periodSeconds: 5
       volumes:
       - name: chromadb-storage
         persistentVolumeClaim:
