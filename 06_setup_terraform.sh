@@ -335,42 +335,42 @@ resource "kubernetes_manifest" "trading_service_monitor" {
 EOF
 
 # Providers file
-cat > providers.tf << 'EOF'
-terraform {
-  required_version = ">= 1.0"
-  
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.23"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.11"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.4"
-    }
-  }
-
-  backend "local" {
-    path = "terraform.tfstate"
-  }
-}
-
-provider "kubernetes" {
-  config_path = var.kubeconfig_path
-}
-
-provider "helm" {
-  kubernetes {
-    config_path = var.kubeconfig_path
-  }
-}
-
-provider "local" {}
-EOF
+#cat > providers.tf << 'EOF'
+#terraform {
+#  required_version = ">= 1.0"
+#  
+#  required_providers {
+#    kubernetes = {
+#      source  = "hashicorp/kubernetes"
+#      version = "~> 2.23"
+#    }
+#    helm = {
+#      source  = "hashicorp/helm"
+#      version = "~> 2.11"
+#    }
+#    local = {
+#      source  = "hashicorp/local"
+#      version = "~> 2.4"
+#    }
+#  }
+#
+#  backend "local" {
+#    path = "terraform.tfstate"
+#  }
+#}
+#
+#provider "kubernetes" {
+#  config_path = var.kubeconfig_path
+#}
+#
+#provider "helm" {
+#  kubernetes {
+#    config_path = var.kubeconfig_path
+#  }
+#}
+#
+#provider "local" {}
+#EOF
 
 # Terraform variables file
 cat > terraform.tfvars << 'EOF'
