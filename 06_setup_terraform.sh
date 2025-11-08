@@ -63,6 +63,10 @@ resource "kubernetes_namespace" "trading_system" {
       environment = var.environment
     }
   }
+
+  lifecycle {
+    ignore_changes = [metadata]
+  }
 }
 
 resource "kubernetes_namespace" "monitoring" {
@@ -72,6 +76,10 @@ resource "kubernetes_namespace" "monitoring" {
       name        = "monitoring"
       environment = var.environment
     }
+  }
+
+  lifecycle {
+    ignore_changes = [metadata]
   }
 }
 
@@ -83,6 +91,10 @@ resource "kubernetes_namespace" "databases" {
       environment = var.environment
     }
   }
+
+  lifecycle {
+    ignore_changes = [metadata]
+  }
 }
 
 # Storage Class for local storage
@@ -92,6 +104,10 @@ resource "kubernetes_storage_class" "local_storage" {
   }
   storage_provisioner = "kubernetes.io/no-provisioner"
   volume_binding_mode = "WaitForFirstConsumer"
+
+  lifecycle {
+    ignore_changes = [metadata]
+  }
 }
 
 # Persistent Volumes
