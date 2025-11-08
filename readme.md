@@ -1,3 +1,7 @@
+Make sure  to create the ones who will be the workesrs or have the operatives systems already atleas to deploythe add worker file.
+or
+have a real big machine like 64 RAM and 300 HDD
+
 chmod +x 01_os_setup.sh 02_configure_hostname_network.sh 03_install_docker.sh 04_install_k3s.sh 05_setup_git_repo.sh 06_setup_terraform.sh 07_setup_kubernetes_manifests.sh infrastructure/scripts/setup-master.sh infrastructure/scripts/add-worker.sh infrastructure/scripts/deploy-infrastructure.sh infrastructure/scripts/test-infrastructure.sh infrastructure/scripts/cleanup.sh infrastructure/scripts/backup.sh infrastructure/scripts/restore.sh infrastructure/scripts/deploy.sh
 
 run
