@@ -28,6 +28,8 @@ terraform import kubernetes_namespace.trading_system trading-system
 terraform import kubernetes_namespace.monitoring monitoring
 terraform import kubernetes_namespace.databases databases
 terraform import kubernetes_storage_class.local_storage local-storage
+terraform import kubernetes_persistent_volume.data_storage trading-data-pv
+terraform import kubernetes_persistent_volume.models_storage models-pv
 
 # Main Terraform configuration file
 cat > main.tf << 'EOF'
