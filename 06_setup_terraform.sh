@@ -23,6 +23,12 @@ mkdir -p ~/trading-ai-system/infrastructure/terraform
 # Navigate to the Terraform directory
 cd ~/trading-ai-system/infrastructure/terraform
 
+echo "importing previous namespaces and storage class created before with other resoucers"
+terraform import kubernetes_namespace.trading_system trading-system
+terraform import kubernetes_namespace.monitoring monitoring
+terraform import kubernetes_namespace.databases databases
+terraform import kubernetes_storage_class.local_storage local-storage
+
 # Main Terraform configuration file
 cat > main.tf << 'EOF'
 terraform {
