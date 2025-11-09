@@ -174,6 +174,15 @@ spec:
   storageClassName: local-storage
   hostPath:
     path: /mnt/prometheus
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - trading-ai-master    
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -187,6 +196,15 @@ spec:
   storageClassName: local-storage
   hostPath:
     path: /mnt/grafana
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - trading-ai-master
 EOF
 
 cat > ~/trading-ai-system/kubernetes/storage/storage-class.yaml << 'EOF'
