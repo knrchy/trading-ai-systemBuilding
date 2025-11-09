@@ -161,6 +161,31 @@ spec:
           operator: In
           values:
           - trading-ai-master
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-pv
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  hostPath:
+    path: /mnt/prometheus
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  hostPath:
+    path: /mnt/grafana
 EOF
 
 cat > ~/trading-ai-system/kubernetes/storage/storage-class.yaml << 'EOF'
