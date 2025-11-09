@@ -161,6 +161,7 @@ spec:
           operator: In
           values:
           - trading-ai-master
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
