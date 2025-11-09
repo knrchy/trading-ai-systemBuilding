@@ -264,23 +264,34 @@ EOF
 
 # Monitoring configuration file
 cat > monitoring.tf << 'EOF'
-# Data source to wait until the ServiceMonitor CRD is installed and recognized by the API server
-#data "kubernetes_api_versions" "monitoring_coreos_v1" {
-#  group = "monitoring.coreos.com"
-#  version = "v1"
-#  # Force this data source lookup to wait until the Helm release (which installs the CRD) is deployed
-#  depends_on = [helm_release.prometheus] 
-#}
-
-# Prometheus for metrics collection
-resource "helm_release" "prometheus" {
+#################################################
+# Wait for Prometheus CRDs to be available
+#################################################
+resource "null_resource" "wait_for_crd" {
   count = var.monitoring_enabled ? 1 : 0
 
-  name       = "prometheus"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "kube-prometheus-stack"
-  namespace  = kubernetes_namespace.monitoring.metadata[0].name
-  version    = "51.0.0"
+  # Trigger ensures wait only happens after Helm release is created
+  triggers = {
+    release_name = helm_release.prometheus[0].name
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 30" # Wait for 30 seconds to allow the API server to catch up
+  }
+
+  depends_on = [helm_release.prometheus]
+}
+
+#################################################
+# Helm Release: Prometheus + Grafana + Alertmanager
+#################################################
+resource "helm_release" "prometheus" {
+  count       = var.monitoring_enabled ? 1 : 0
+  name        = "prometheus"
+  repository  = "https://prometheus-community.github.io/helm-charts"
+  chart       = "kube-prometheus-stack"
+  namespace   = kubernetes_namespace.monitoring.metadata[0].name
+  version     = "51.0.0"
 
   values = [
     yamlencode({
@@ -312,10 +323,10 @@ resource "helm_release" "prometheus" {
         }
       }
       grafana = {
-        enabled = true
-        adminPassword = "admin" # Change this in production!
+        enabled        = true
+        adminPassword  = "admin" # Change in production!
         service = {
-          type = "NodePort"
+          type     = "NodePort"
           nodePort = 30300
         }
         persistence = {
@@ -332,7 +343,9 @@ resource "helm_release" "prometheus" {
   depends_on = [kubernetes_namespace.monitoring]
 }
 
-# ServiceMonitor for custom metrics
+#################################################
+# ServiceMonitor for custom trading metrics
+#################################################
 resource "kubernetes_manifest" "trading_service_monitor" {
   count = var.monitoring_enabled ? 1 : 0
 
@@ -362,11 +375,11 @@ resource "kubernetes_manifest" "trading_service_monitor" {
     }
   }
 
-  # Add dependency on the data source and the namespace creation
-  #depends_on = [
-  #  data.kubernetes_api_versions.monitoring_coreos_v1,
-  #  kubernetes_namespace.trading_system
-  #]
+  # Explicit dependency on the wait resource
+  depends_on = [
+    null_resource.wait_for_crd,
+    kubernetes_namespace.trading_system
+  ]
 }
 EOF
 
