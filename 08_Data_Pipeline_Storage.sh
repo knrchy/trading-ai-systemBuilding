@@ -3258,12 +3258,3 @@ def test_data_validator():
     assert result is False
 
 EOF
-
-cat > ~/trading-ai-system/ << 'EOF'
-
-EOF
-
-cat > ~/trading-ai-system/ << 'EOF'
-
-EOF
-
