@@ -191,7 +191,7 @@ metadata:
   name: prometheus-pv
 spec:
   capacity:
-    storage: 50Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   storageClassName: local-storage
@@ -452,7 +452,7 @@ spec:
             memory: "1Gi"
             cpu: "500m"
           limits:
-            memory: "2Gi"
+            memory: "1Gi"
             cpu: "1000m"
         livenessProbe:
           exec:
@@ -704,7 +704,7 @@ spec:
         resources:
           requests:
             memory: "4Gi"
-            cpu: "2000m"
+            cpu: "4000m"
           limits:
             memory: "8Gi"
             cpu: "4000m"
