@@ -2,6 +2,7 @@
 
 # Create the files and thier content for Applications manifests
 
+
 cat > ~/trading-ai-system/applications/data-pipeline/schema/001_initial_schema.sql << 'EOF'
 -- ============================================
 -- Trading AI System - Database Schema
@@ -1619,6 +1620,10 @@ EXPOSE 8000
 
 # Run application
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+EOF
+
+cat > ~/trading-ai-system/applications/data-pipeline/.env.example << 'EOF'
 File: applications/data-pipeline/.env.example
 # Application
 APP_NAME=Trading AI Data Pipeline
