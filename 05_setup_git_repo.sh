@@ -535,6 +535,12 @@ EOF
 
 echo "Creating directory structure..."
 mkdir -p {docs/phase-guides,infrastructure/{terraform,ansible/{playbooks,inventory},scripts},kubernetes/{namespaces,storage,databases/{chromadb,redis,postgres},services/{rag-service,api-gateway,ollama,celery-workers},monitoring/{prometheus,grafana},ingress},applications/{data-pipeline,rag-engine,backtesting-engine,ml-optimizer,api-gateway}/{src,tests},data/{raw,processed,embeddings,models},configs/{development,staging,production},scripts}
+mkdir -p applications/data-pipeline/schema
+mkdir -p applications/data-pipeline/src/models/
+mkdir -p applications/data-pipeline/src/parsers/
+mkdir -p applications/data-pipeline/src/services/
+mkdir -p applications/data-pipeline/src/api/
+mkdir -p kubernetes/services/data-pipeline/
 
 echo "Creating .gitkeep files for empty directories..."
 find data -type d -exec touch {}/.gitkeep \;
