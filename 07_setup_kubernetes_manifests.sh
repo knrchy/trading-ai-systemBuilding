@@ -34,6 +34,29 @@ metadata:
     environment: development
 EOF
 
+# Trading data PVC
+cat > ~/trading-ai-system/kubernetes/storage/trading-data-pvc.yaml << 'EOF'
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: trading-data-pvc
+  namespace: trading-system
+  labels:
+    app: trading-system
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app: trading-system
+EOF
+
+
 # Storage files
 cat > ~/trading-ai-system/kubernetes/storage/persistent-volumes.yaml << 'EOF'
 ---
