@@ -125,7 +125,7 @@ resource "kubernetes_persistent_volume" "data_storage" {
   }
   spec {
     capacity = {
-      storage = "500Gi"
+      storage = "5Gi"
     }
     access_modes = ["ReadWriteMany"]
     persistent_volume_source {
@@ -181,7 +181,7 @@ variable "monitoring_enabled" {
 variable "data_storage_size" {
   description = "Size of data storage in Gi"
   type        = string
-  default     = "500Gi"
+  default     = "5Gi"
 }
 
 variable "models_storage_size" {
@@ -205,7 +205,7 @@ variable "default_cpu_limit" {
 variable "default_memory_limit" {
   description = "Default memory limit for containers"
   type        = string
-  default     = "4Gi"
+  default     = "2Gi"
 }
 
 variable "enable_gpu" {
@@ -316,8 +316,8 @@ resource "helm_release" "prometheus" {
               cpu    = "1000m"
             }
             limits = {
-              memory = "4Gi"
-              cpu    = "2000m"
+              memory = "2Gi"
+              cpu    = "1000m"
             }
           }
         }
@@ -431,15 +431,15 @@ cluster_name    = "trading-ai-cluster"
 monitoring_enabled = true
 
 # Storage
-data_storage_size   = "500Gi"
+data_storage_size   = "5Gi"
 models_storage_size = "100Gi"
 
 # Kubernetes Config
 kubeconfig_path = "~/.kube/config"
 
 # Resource Limits
-default_cpu_limit    = "2000m"
-default_memory_limit = "4Gi"
+default_cpu_limit    = "1000m"
+default_memory_limit = "2Gi"
 EOF
 
 echo "Terraform configuration files created successfully."
