@@ -653,9 +653,178 @@ spec:
     app: chromadb
 EOF
 
-# Ollama deployment file
-cat > ~/trading-ai-system/kubernetes/services/ollama/ollama-deployment.yaml << 'EOF'
+# nfs server deployment file
+cat > ~/trading-ai-system/kubernetes/storage/nfs/nfs-server.yaml << 'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server
+  namespace: nfs
+  labels:
+    app: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-server
+  template:
+    metadata:
+      labels:
+        app: nfs-server
+    spec:
+      # The pod runs as root to allow exporting hostPath; acceptable for dev clusters.
+      containers:
+      - name: nfs-server
+        image: itsthenetwork/nfs-server-alpine:2.8.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SHARED_DIRECTORY
+          value: /exports
+        ports:
+        - containerPort: 2049
+          name: nfs
+        - containerPort: 20048
+          name: mountd
+        - containerPort: 111
+          name: rpcbind
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: export
+          mountPath: /exports
+      volumes:
+      - name: export
+        hostPath:
+          # Replace or ensure this host path exists on the node(s) in your cluster.
+          path: /opt/nfs
+          type: DirectoryOrCreate
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-server
+  namespace: nfs
+  labels:
+    app: nfs-server
+spec:
+  selector:
+    app: nfs-server
+  ports:
+  - name: nfs
+    port: 2049
+    protocol: TCP
+  clusterIP: None
+EOF
+
+# nfs provisioner deployment file
+cat > ~/trading-ai-system/kubernetes/storage/nfs/nfs-provisioner.yaml << 'EOF'
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfs-provisioner
+  namespace: nfs
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nfs-provisioner-runner
+rules:
+- apiGroups: [""]
+  resources: ["persistentvolumes", "persistentvolumeclaims", "events"]
+  verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nfs-provisioner-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nfs-provisioner-runner
+subjects:
+- kind: ServiceAccount
+  name: nfs-provisioner
+  namespace: nfs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+  namespace: nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-provisioner
+      containers:
+      - name: nfs-client-provisioner
+        # Well-known external provisioner image; pulls subdirs under NFS export.
+        image: quay.io/external_storage/nfs-client-provisioner:latest
+        env:
+        - name: PROVISIONER_NAME
+          value: "example.com/nfs"            # must match storageclass.provisioner
+        - name: NFS_SERVER
+          value: "nfs-server.nfs.svc.cluster.local" # service name of the NFS server above
+        - name: NFS_PATH
+          value: "/exports"
+        volumeMounts:
+        - name: nfs-client-root
+          mountPath: /persistentvolumes
+      volumes:
+      - name: nfs-client-root
+        nfs:
+          server: nfs-server.nfs.svc.cluster.local
+          path: /exports
+EOF
+
+# nfs client deployment file
+cat > ~/trading-ai-system/kubernetes/storage/nfs/nfs-client.yaml << 'EOF'
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-client
+provisioner: example.com/nfs
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
+parameters: {}
+EOF
+
+# nfs client deployment file
+cat > ~/trading-ai-system/kubernetes/storage/nfs/nfs-Namespace.yaml << 'EOF'
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfs
+  labels:
+    app: nfs
+EOF
+
+# nfs StorageClass deployment file
+cat > ~/trading-ai-system/kubernetes/storage/nfs/StorageClass-nfs.yaml << 'EOF'
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-client
+provisioner: example.com/nfs
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
+parameters: {}
+EOF
+
+# nfs ollama-pvc deployment file
+cat > ~/trading-ai-system/kubernetes/storage/ollama-pvc.yaml << 'EOF'
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -664,13 +833,18 @@ metadata:
   labels:
     app: ollama
 spec:
-  storageClassName: local-path
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: nfs-client
   resources:
     requests:
-      storage: 5Gi
----
+      storage: 80Gi
+EOF
+
+
+
+# Ollama deployment file
+cat > ~/trading-ai-system/kubernetes/services/ollama/ollama-deployment.yaml << 'EOF'
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -688,6 +862,7 @@ spec:
       labels:
         app: ollama
     spec:
+      # No nodeAffinity -> schedule on any node
       containers:
       - name: ollama
         image: ollama/ollama:latest
@@ -701,6 +876,7 @@ spec:
         volumeMounts:
         - name: ollama-models
           mountPath: /root/.ollama
+          # After initial pull you can set readOnly: true to prevent accidental writes
         resources:
           requests:
             memory: "4Gi"
